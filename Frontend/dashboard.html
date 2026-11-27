@@ -1,0 +1,212 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | QuizVerse</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="navbar">
+    <a href="index.html" class="logo">quizverse<span>.</span></a>
+
+    <nav class="nav-links">
+        <a href="dashboard.html" class="active">Dashboard</a>
+        <a href="quizzes.html">Quizzes</a>
+        <a href="leaderboard.html">Leaderboard</a>
+    </nav>
+
+    <a href="login.html" class="btn btn-outline" id="logoutBtn">Log out</a>
+</header>
+
+<main class="dashboard-container">
+
+    <section class="dashboard-welcome">
+        <div>
+            <p class="section-label">STUDENT DASHBOARD</p>
+            <h1>Ready to challenge yourself<span>?</span></h1>
+            <p class="auth-description" id="welcomeMessage">
+                Choose a quiz, test your knowledge, and keep improving.
+            </p>
+        </div>
+        <a href="quizzes.html" class="btn btn-primary">Explore quizzes →</a>
+    </section>
+
+    <section class="stats-grid">
+        <div class="stat-card">
+            <p>Quizzes attempted</p>
+            <h2 id="attemptedCount">0</h2>
+        </div>
+
+        <div class="stat-card">
+            <p>Average score</p>
+            <h2 id="averageScore">0%</h2>
+        </div>
+
+        <div class="stat-card">
+            <p>Best score</p>
+            <h2 id="bestScore">0%</h2>
+        </div>
+    </section>
+
+    <section class="dashboard-section">
+        <div class="section-heading">
+            <div>
+                <p class="section-label">YOUR LEARNING</p>
+                <h2>Explore categories</h2>
+            </div>
+            <a href="quizzes.html" class="text-link">View all →</a>
+        </div>
+
+        <div class="category-grid">
+            <a href="quizzes.html" class="category-card">
+                <span class="category-number">01</span>
+                <h3>Technology</h3>
+                <p>Programming, computers and innovation</p>
+            </a>
+
+            <a href="quizzes.html" class="category-card">
+                <span class="category-number">02</span>
+                <h3>Science</h3>
+                <p>Explore the world around you</p>
+            </a>
+
+            <a href="quizzes.html" class="category-card">
+                <span class="category-number">03</span>
+                <h3>Mathematics</h3>
+                <p>Logic, numbers and problem-solving</p>
+            </a>
+
+            <a href="quizzes.html" class="category-card">
+                <span class="category-number">04</span>
+                <h3>General Knowledge</h3>
+                <p>Put your awareness to the test</p>
+            </a>
+        </div>
+    </section>
+
+    <section class="dashboard-section">
+        <div class="section-heading">
+            <div>
+                <p class="section-label">RECENT ACTIVITY</p>
+                <h2>Your recent attempts</h2>
+            </div>
+        </div>
+
+        <div id="recentAttempts" class="empty-state">
+            <h3>Loading your activity...</h3>
+        </div>
+    </section>
+
+</main>
+
+<script>
+const user = JSON.parse(
+    sessionStorage.getItem("loggedInUser") || "null"
+);
+
+if (!user) {
+    window.location.href = "login.html";
+}
+
+document.getElementById("welcomeMessage").textContent =
+    user ? `Welcome back, ${user.name}! Keep learning and improving.` : "";
+
+document.getElementById("logoutBtn").addEventListener("click", () => {
+    sessionStorage.removeItem("loggedInUser");
+});
+
+async function loadDashboard() {
+    const recentAttempts = document.getElementById("recentAttempts");
+
+    try {
+        const [resultResponse, quizResponse] = await Promise.all([
+            fetch(`http://localhost:8080/api/results/user/${user.id}`),
+            fetch("http://localhost:8080/api/quizzes")
+        ]);
+
+        if (!resultResponse.ok || !quizResponse.ok) {
+            throw new Error("Unable to load dashboard data.");
+        }
+
+        const results = await resultResponse.json();
+        const quizzes = await quizResponse.json();
+
+        document.getElementById("attemptedCount").textContent =
+            results.length;
+
+        if (results.length === 0) {
+            document.getElementById("averageScore").textContent = "0%";
+            document.getElementById("bestScore").textContent = "0%";
+
+            recentAttempts.innerHTML = `
+                <h3>No quizzes attempted yet.</h3>
+                <p>Your quiz history will appear here once you start playing.</p>
+                <a href="quizzes.html" class="text-link">
+                    Take your first quiz →
+                </a>
+            `;
+            return;
+        }
+
+        const percentages = results.map(
+            result => Number(result.percentage)
+        );
+
+        const average = percentages.reduce(
+            (total, value) => total + value, 0
+        ) / percentages.length;
+
+        const best = Math.max(...percentages);
+
+        document.getElementById("averageScore").textContent =
+            `${average.toFixed(1)}%`;
+
+        document.getElementById("bestScore").textContent =
+            `${best.toFixed(1)}%`;
+
+        results.sort(
+            (a, b) => new Date(b.attemptedAt) - new Date(a.attemptedAt)
+        );
+
+        recentAttempts.className = "recent-attempts";
+
+        recentAttempts.innerHTML = results.slice(0, 5).map(result => {
+            const quiz = quizzes.find(
+                q => String(q.id) === String(result.quizId)
+            );
+
+            const date = new Date(result.attemptedAt).toLocaleString();
+
+            return `
+                <div class="stat-card" style="margin-bottom: 15px;">
+                    <h3>${quiz ? quiz.title : "Quiz #" + result.quizId}</h3>
+                    <p>
+                        Score: ${Number(result.score).toFixed(1)}
+                        | Correct: ${result.correctAnswers}/${result.totalQuestions}
+                    </p>
+                    <p>Percentage: ${Number(result.percentage).toFixed(1)}%</p>
+                    <small>${date}</small>
+                </div>
+            `;
+        }).join("");
+
+    } catch (error) {
+        console.error("Dashboard error:", error);
+
+        recentAttempts.innerHTML = `
+            <h3>Unable to load dashboard.</h3>
+            <p>Please check whether the Java backend is running.</p>
+        `;
+    }
+}
+
+if (user) {
+    loadDashboard();
+}
+</script>
+
+</body>
+</html>

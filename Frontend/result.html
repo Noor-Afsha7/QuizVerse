@@ -1,0 +1,71 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Results | QuizVerse</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <a href="index.html" class="logo">quizverse<span>.</span></a>
+        <a href="dashboard.html" class="nav-link">← Dashboard</a>
+    </header>
+
+    <main class="result-container">
+
+        <section class="result-card">
+            <p class="section-label">QUIZ COMPLETED</p>
+
+            <h1 id="resultHeading">Well done<span>.</span></h1>
+
+            <p class="result-description" id="resultDescription">
+                You've completed your quiz. Here's how you performed.
+            </p>
+
+            <div class="score-circle">
+                <div>
+                    <h2 id="scorePercentage">0%</h2>
+                    <p>YOUR SCORE</p>
+                </div>
+            </div>
+
+            <p id="marksScore" class="result-message">
+                0 / 0 marks
+            </p>
+
+            <div class="result-stats">
+                <div>
+                    <span>Correct answers</span>
+                    <h3 id="correctAnswers">0</h3>
+                </div>
+
+                <div>
+                    <span>Incorrect answers</span>
+                    <h3 id="incorrectAnswers">0</h3>
+                </div>
+
+                <div>
+                    <span>Total questions</span>
+                    <h3 id="totalQuestions">10</h3>
+                </div>
+            </div>
+
+            <p id="resultMessage" class="result-message">
+                Keep learning and improving!
+            </p>
+
+            <div class="result-actions">
+                <a href="quiz.html" class="btn btn-primary">Try again →</a>
+                <a href="quizzes.html" class="btn btn-outline">Other quizzes</a>
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

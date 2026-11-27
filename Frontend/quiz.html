@@ -1,0 +1,59 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attempt Quiz | QuizVerse</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <a href="index.html" class="logo">quizverse<span>.</span></a>
+        <a href="quizzes.html" class="nav-link" id="exitQuiz">← Back to quizzes</a>
+    </header>
+
+    <main class="quiz-container">
+
+        <section class="quiz-header">
+            <div>
+                <p class="section-label" id="quizCategory">CATEGORY</p>
+                <h1 id="quizTitle">Quiz Title</h1>
+                <p class="quiz-subtitle" id="quizDescription">Quiz description</p>
+            </div>
+
+            <div class="quiz-timer">
+                <span>TIME LEFT</span>
+                <h2 id="timer">15:00</h2>
+            </div>
+        </section>
+
+        <div class="quiz-progress">
+            <div class="progress-info">
+                <span id="questionCount">Question 1 of 10</span>
+                <span id="progressPercent">10% completed</span>
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <section class="question-card">
+            <p class="section-label" id="questionNumber">QUESTION 01</p>
+            <h2 id="questionText">Loading question...</h2>
+
+            <div class="options-list" id="optionsList">
+            </div>
+        </section>        
+        <div class="quiz-navigation">
+            <button class="btn btn-outline" id="previousBtn" disabled>← Previous</button>
+            <button class="btn btn-primary" id="nextBtn">Next question →</button>
+            <button class="btn btn-primary" id="submitBtn" hidden>Submit quiz</button>
+        </div>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

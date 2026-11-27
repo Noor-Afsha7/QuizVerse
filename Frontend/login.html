@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | QuizVerse</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <a href="index.html" class="logo">quizverse<span>.</span></a>
+        <a href="index.html" class="nav-link">← Back to home</a>
+    </header>
+
+    <main class="auth-container">
+        <div class="auth-card">
+            <p class="section-label">WELCOME BACK</p>
+            <h1>Good to see you<span>.</span></h1>
+            <p class="auth-description">Log in to continue your learning journey.</p>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email address</label>
+                    <input type="email" id="email" placeholder="you@example.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary auth-button">
+                    Log in →
+                </button>
+            </form>
+
+            <p class="auth-switch">
+                Don't have an account? <a href="register.html">Create one</a>
+            </p>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    
+</body>
+</html>

@@ -1,0 +1,120 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Questions | QuizVerse</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="admin-dashboard.html" class="logo">QuizVerse<span>.</span></a>
+
+        <div class="nav-links">
+            <a href="admin-dashboard.html" class="nav-link">Dashboard</a>
+            <a href="admin-quizzes.html" class="nav-link">Quizzes</a>
+            <a href="admin-questions.html" class="nav-link active">Questions</a>
+        </div>
+
+        <a href="index.html" class="nav-button">Logout</a>
+    </nav>
+
+    <main class="admin-page">
+        <section class="admin-page-header">
+            <div>
+                <p class="section-label">CONTENT MANAGEMENT</p>
+                <h1>Manage Questions</h1>
+                <p>Add and organize questions for your quizzes.</p>
+            </div>
+        </section>
+
+        <section class="admin-quiz-toolbar">
+            <div>
+                <h2>Question Library</h2>
+                <p id="adminQuestionCount">0 questions</p>
+            </div>
+
+            <button class="admin-primary-button" id="createQuestionBtn">
+                + Add Question
+            </button>
+        </section>
+
+        <section class="admin-quiz-list" id="adminQuestionList">
+            <div class="admin-empty-state">
+                <h3>No questions added yet</h3>
+                <p>Start building your quiz by adding your first question.</p>
+                <button class="admin-primary-button" id="emptyCreateQuestionBtn">
+                    Add your first question
+                </button>
+            </div>
+        </section>
+    </main>
+
+
+<!-- ADD QUESTION MODAL -->
+<div class="admin-modal" id="createQuestionModal">
+    <div class="admin-modal-content">
+        <div class="admin-modal-header">
+            <div>
+                <p class="section-label">QUESTION BUILDER</p>
+                <h2 id="questionModalTitle">Add Question</h2>
+            </div>
+            <button type="button" class="modal-close" id="closeQuestionModal">&times;</button>
+        </div>
+
+        <form id="createQuestionForm">
+
+            <div class="form-group">
+                <label for="questionQuiz">Select Quiz</label>
+                <select id="questionQuiz" required>
+                    <option value="">Choose a quiz</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="questionText">Question</label>
+                <textarea id="questionText" rows="3"
+                    placeholder="Enter your question..." required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Answer Options</label>
+
+                <input type="text" id="optionA" placeholder="Option A" required>
+                <input type="text" id="optionB" placeholder="Option B" required>
+                <input type="text" id="optionC" placeholder="Option C" required>
+                <input type="text" id="optionD" placeholder="Option D" required>
+            </div>
+
+            <div class="form-group">
+                <label for="correctAnswer">Correct Answer</label>
+                <select id="correctAnswer" required>
+                    <option value="">Select correct option</option>
+                    <option value="0">Option A</option>
+                    <option value="1">Option B</option>
+                    <option value="2">Option C</option>
+                    <option value="3">Option D</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="questionMarks">Marks</label>
+                <input type="number" id="questionMarks" min="1" value="1" required>
+            </div>
+
+            <div class="admin-modal-actions">
+                <button type="button" class="admin-secondary-button"
+                    id="cancelQuestionModal">Cancel</button>
+                <button type="submit" class="admin-primary-button"
+                    id="saveQuestionBtn">Save Question</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+    <script src="script.js"></script>
+</body>
+</html>

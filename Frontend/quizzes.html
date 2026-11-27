@@ -1,0 +1,65 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quizzes | QuizVerse</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <a href="index.html" class="logo">quizverse<span>.</span></a>
+
+        <nav class="nav-links">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="quizzes.html" class="active">Quizzes</a>
+            <a href="leaderboard.html">Leaderboard</a>
+        </nav>
+
+        <a href="login.html" class="btn btn-outline">Log out</a>
+    </header>
+
+    <main class="dashboard-container">
+
+        <section class="dashboard-welcome">
+            <div>
+                <p class="section-label">THE QUIZ LIBRARY</p>
+                <h1>Find your next challenge<span>.</span></h1>
+                <p class="auth-description">Choose a subject, test your knowledge, and see how far you can go.</p>
+            </div>
+        </section>
+
+        <section class="quiz-toolbar">
+            <div class="quiz-search">
+                <input type="search" id="quizSearch" placeholder="Search quizzes...">
+            </div>
+
+            <select id="categoryFilter">
+                <option value="all">All categories</option>
+                <option value="technology">Technology</option>
+                <option value="science">Science</option>
+                <option value="mathematics">Mathematics</option>
+                <option value="general">General Knowledge</option>
+            </select>
+        </section>
+
+        
+<section class="quiz-list" id="studentQuizList">
+
+    <div class="empty-state">
+        <h3>No quizzes available yet</h3>
+        <p>New challenges will appear here when quizzes are published.</p>
+    </div>
+
+</section>
+
+        <p id="noQuizzes" class="empty-state" hidden>No quizzes found. Try another search.</p>
+
+    </main>
+
+    <script src="script.js"></script>
+    
+</body>
+</html>

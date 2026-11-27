@@ -1,0 +1,202 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard | QuizVerse</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="logo">Quiz<span>Verse</span></a>
+
+        <div class="nav-links">
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="quizzes.html" class="nav-link">Quizzes</a>
+            <a href="leaderboard.html" class="nav-link active">Leaderboard</a>
+        </div>
+
+        <a href="login.html" class="nav-button" id="logoutBtn">Log out</a>
+    </nav>
+
+    <main class="leaderboard-page">
+
+        <section class="leaderboard-heading">
+            <p class="section-label">THE QUIZVERSE COMMUNITY</p>
+            <h1>Leaderboard</h1>
+            <p>See who's leading the competition.</p>
+        </section>
+
+        <section class="leaderboard-summary">
+
+            <div class="leaderboard-stat">
+                <span class="stat-label">TOTAL PLAYERS</span>
+                <h2 id="totalPlayers">—</h2>
+            </div>
+
+            <div class="leaderboard-stat">
+                <span class="stat-label">QUIZZES COMPLETED</span>
+                <h2 id="quizzesCompleted">—</h2>
+            </div>
+
+            <div class="leaderboard-stat">
+                <span class="stat-label">TOP SCORE</span>
+                <h2 id="topScore">—</h2>
+            </div>
+
+        </section>
+
+        <section class="leaderboard-section">
+
+            <div class="leaderboard-section-heading">
+                <div>
+                    <p class="section-label">GLOBAL RANKINGS</p>
+                    <h2>Top performers</h2>
+                </div>
+
+                <span class="ranking-period">All time</span>
+            </div>
+
+            <div class="leaderboard-table" id="leaderboardTable">
+                <div class="leaderboard-empty">
+                    <h3>Loading rankings...</h3>
+                </div>
+            </div>
+
+            <p class="leaderboard-note">
+                Rankings are calculated from students' average quiz percentages.
+            </p>
+
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <p>© 2026 QuizVerse. Learn. Challenge. Improve.</p>
+    </footer>
+
+    <script>
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+        sessionStorage.removeItem("loggedInUser");
+    });
+
+    async function loadLeaderboard() {
+        const table = document.getElementById("leaderboardTable");
+
+        try {
+            const [usersResponse, resultsResponse] = await Promise.all([
+                fetch("http://localhost:8080/api/users"),
+                fetch("http://localhost:8080/api/results")
+            ]);
+
+            if (!usersResponse.ok || !resultsResponse.ok) {
+                throw new Error("Could not load leaderboard data.");
+            }
+
+            const users = await usersResponse.json();
+            const results = await resultsResponse.json();
+
+            const students = users.filter(user => user.role === "student");
+
+            document.getElementById("totalPlayers").textContent =
+                students.length;
+
+            document.getElementById("quizzesCompleted").textContent =
+                results.length;
+
+            if (results.length === 0) {
+                document.getElementById("topScore").textContent = "0%";
+
+                table.innerHTML = `
+                    <div class="leaderboard-empty">
+                        <h3>No rankings yet</h3>
+                        <p>Complete a quiz to appear on the leaderboard.</p>
+                        <a href="quizzes.html" class="nav-button">Explore quizzes</a>
+                    </div>
+                `;
+                return;
+            }
+
+            const rankings = students.map(user => {
+                const userResults = results.filter(
+                    result => String(result.userId) === String(user.id)
+                );
+
+                const average = userResults.length
+                    ? userResults.reduce(
+                        (sum, result) => sum + Number(result.percentage), 0
+                    ) / userResults.length
+                    : 0;
+
+                return {
+                    id: user.id,
+                    name: user.name,
+                    attempts: userResults.length,
+                    average: average
+                };
+            })
+            .filter(student => student.attempts > 0)
+            .sort((a, b) => b.average - a.average);
+
+            document.getElementById("topScore").textContent =
+                `${rankings.length ? rankings[0].average.toFixed(1) : "0"}%`;
+
+            if (rankings.length === 0) {
+                table.innerHTML = `
+                    <div class="leaderboard-empty">
+                        <h3>No rankings yet</h3>
+                        <p>Complete a quiz to appear on the leaderboard.</p>
+                        <a href="quizzes.html" class="nav-button">Explore quizzes</a>
+                    </div>
+                `;
+                return;
+            }
+
+            table.innerHTML = `
+                <div class="leaderboard-row leaderboard-header">
+                    <span>Rank</span>
+                    <span>Student</span>
+                    <span>Attempts</span>
+                    <span>Average score</span>
+                </div>
+                ${rankings.slice(0, 10).map((student, index) => `
+                    <div class="leaderboard-row">
+                        <span class="rank-number">
+                            ${index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : "#" + (index + 1)}
+                        </span>
+                        <span class="student-name">${escapeHTML(student.name)}</span>
+                        <span>${student.attempts}</span>
+                        <strong>${student.average.toFixed(1)}%</strong>
+                    </div>
+                `).join("")}
+            `;
+
+        } catch (error) {
+            console.error("Leaderboard error:", error);
+
+            table.innerHTML = `
+                <div class="leaderboard-empty">
+                    <h3>Unable to load leaderboard</h3>
+                    <p>Make sure the Java backend is running and try again.</p>
+                </div>
+            `;
+        }
+    }
+
+    function escapeHTML(value) {
+        return String(value).replace(/[&<>"']/g, char => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#039;"
+        })[char]);
+    }
+
+    loadLeaderboard();
+    </script>
+
+</body>
+</html>
